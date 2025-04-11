@@ -1,0 +1,23 @@
+// Prefix all literals with "@(#)" so that they will be displayed by the "what"
+// command
+
+char const *
+git_sha()
+{
+  return &"@(#)GIT_SHA=${GIT_SHA}"[4];
+}
+char const *
+git_sha_short()
+{
+  return &"@(#)GIT_SHA_SHORT=${GIT_SHA_SHORT}"[4];
+}
+char const *
+git_commit_date()
+{
+  return &"@(#)GIT_COMMIT_DATE=${GIT_COMMIT_DATE}"[4];
+}
+char const *
+build_timestamp()
+{
+  return &"@(#)BUILD_TIMESTAMP=${BUILD_TIMESTAMP}"[4];
+}
