@@ -14,8 +14,7 @@ function(CheckGitRead git_hash)
     endif ()
 endfunction()
 
-
-if(GIT_FOUND)
+if(GIT_FOUND AND EXISTS "${GIT_FOLDER}")
     # Get the latest commit hash
     execute_process(
             COMMAND ${GIT_EXECUTABLE} rev-parse HEAD
@@ -55,6 +54,11 @@ if(GIT_FOUND)
         set(GIT_SHA_CACHE "INVALID")
     endif ()
 
+    if(GIT_DIRTY_CHECK)
+        set(GIT_SHA "${GIT_SHA}-dirty")
+        set(GIT_SHA_SHORT "${GIT_SHA_SHORT}-dirty")
+    endif()
+
     set (UPDATE_VERSION_OUTPUT OFF)
     # Only update the VERSION_OUTPUT file if the hash has changed. This will
     # prevent us from rebuilding the project more than we need to.
@@ -65,17 +69,14 @@ if(GIT_FOUND)
         set (UPDATE_VERSION_OUTPUT ON)
     endif()
 
-
-
-    if(GIT_DIRTY_CHECK)
-        set(GIT_SHA "${GIT_SHA}-dirty")
-        set(GIT_SHA_SHORT "${GIT_SHA_SHORT}-dirty")
-    endif()
-
 else()
+    message(WARNING "No git info available. Setting BUILD_TIMESTAMP only")
     set(GIT_SHA "unknown")
     set(GIT_SHA_SHORT "unknown")
     set(GIT_COMMIT_DATE "unknown")
+
+    # Force updating VERSION_OUTPUT file to at least get the current build timestamp
+    set (UPDATE_VERSION_OUTPUT ON)
 endif()
 
 # Set build timestamp
@@ -83,7 +84,7 @@ string(TIMESTAMP BUILD_TIMESTAMP "%Y-%m-%d %H:%M:%S")
 
 # Configure the VERSION_OUTPUT file if needed
 if(UPDATE_VERSION_OUTPUT)
-    message(STATUS "Updating ${VERSION_OUTPUT}")
+    message(STATUS "Updating ${VERSION_OUTPUT} with BUILD_TIMESTAMP ${BUILD_TIMESTAMP}")
     configure_file(
             ${VERSION_TEMPLATE}
             ${VERSION_OUTPUT}

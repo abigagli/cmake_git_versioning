@@ -38,6 +38,7 @@ add_custom_target(
         DEPENDS ${VERSION_TEMPLATE} ${CMAKE_CURRENT_LIST_DIR}/generate_versioning_info.cmake
         COMMAND ${CMAKE_COMMAND}
         #-DGIT_SHA_CACHE=${GIT_SHA_CACHE}
+        -DGIT_FOLDER="${CMAKE_SOURCE_DIR}/.git"
         -DVERSION_TEMPLATE=${VERSION_TEMPLATE}
         -DVERSION_OUTPUT=${VERSION_OUTPUT}
         -P ${CMAKE_CURRENT_LIST_DIR}/generate_versioning_info.cmake
